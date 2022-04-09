@@ -1,0 +1,55 @@
+@use 'variables';
+
+@mixin landscape {
+  @media (min-width: 768px){
+    @content;
+  }
+}
+
+@mixin medium-screen {
+@media (min-width: 1024px) {
+  @content;
+}
+}
+
+@mixin wide-screen {
+@media (min-width: 1200px) {
+  @content;
+}
+}
+
+@mixin default-grid{
+display: grid;
+grid-auto-rows: auto;
+grid-template-columns: 1fr;
+}
+
+@mixin default-img{
+object-fit: cover;
+object-position: center;
+}
+
+@mixin default-background{
+background-size: cover;
+background-position: center;
+}
+
+@mixin cover-parent{
+position: absolute;
+width: 100%;
+height: 100%;
+top: 0;
+left: 0;
+}
+
+@mixin image-slot{
+height: 0;
+position: relative;
+}
+
+@mixin heading-row {
+	grid-column: 2/3;
+	justify-self: center;
+  text-align: center;
+  width: 17rem;
+}
