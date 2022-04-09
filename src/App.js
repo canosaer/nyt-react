@@ -5,66 +5,68 @@ import axios from 'axios';
 
 function App() {
   const [searchTerm, setSearchTerm ] = useState('')
-  const [location, setLocation ] = useState('')
-  const [sort, setSort ] = useState('best_match')
-  const [radius, setRadius ] = useState('25')
+  const [sort, setSort ] = useState('relevance')
   const [results, setResults] = useState([])
-  const [openNow, setOpenNow] = useState(false)
-  const [priceArray, setPriceArray] = useState([])
-  const [priceString, setPriceString] = useState('1, 2, 3, 4')
-  const [priceMenuExpanded, setPriceMenuExpanded] = useState(false)
+  const [beginDate, setBeginDate] = useState(null)
+  const [endDate, setEndDate] = useState(null)
+  const [dateMenuExpanded, setDateMenuExpanded] = useState(false)
 
   const debouncedSearchTerm = useDebounce(searchTerm, 500)
-  const debouncedLocation = useDebounce(location, 500)
 
-  const updatePriceFilters = (e) => {
-    let updatedPriceArray = priceArray
-    const selectedBox = e.target.name
-    
-    if(updatedPriceArray.includes(selectedBox)){
-      updatedPriceArray = priceArray.filter(box => box != selectedBox)
-    }
-    else{
-      updatedPriceArray = [...priceArray, selectedBox]
-    }
-    setPriceArray(updatedPriceArray)
 
-    let updatedPriceString = ''
-    if(updatedPriceArray.includes('$')) updatedPriceString = updatedPriceString + '1, '
-    if(updatedPriceArray.includes('$$')) updatedPriceString = updatedPriceString + '2, '
-    if(updatedPriceArray.includes('$$$')) updatedPriceString = updatedPriceString + '3, '
-    if(updatedPriceArray.includes('$$$$')) updatedPriceString = updatedPriceString + '4, '
-    if(!updatedPriceString) updatedPriceString = '1, 2, 3, 4, '
+  const removeDateDashes = (dateString) => {
+    let year  = dateString.slice(0,4)
+    let month = dateString.slice(5,7)
+    let day = dateString.slice(8,10)
+    return year+month+day
+  }
 
-    updatedPriceString = updatedPriceString.slice(0, updatedPriceString.length-2)
+  const parseDate = (dateString) => {
+    let month = ``
+    let year  = dateString.slice(0,4)
+    let monthString = dateString.slice(5,7)
 
-    setPriceString(updatedPriceString)
+    if(monthString===`01`) month = `Jan. `
+    else if(monthString===`02`) month = `Feb. `
+    else if(monthString===`03`) month = `Mar. `
+    else if(monthString===`04`) month = `Apr. `
+    else if(monthString===`05`) month = `May `
+    else if(monthString===`06`) month = `Jun. `
+    else if(monthString===`07`) month = `Jul. `
+    else if(monthString===`08`) month = `Aug. `
+    else if(monthString===`09`) month = `Sept. `
+    else if(monthString===`10`) month = `Oct. `
+    else if(monthString===`11`) month = `Nov. `
+    else if(monthString===`12`) month = `Dec. `
+    else month = ``
+
+    let day = dateString.slice(8,10)
+    if (day[0] === `0`) day = day.substring(1,3)
+    day = day+ `, `
+
+    return month+day+year
   }
 
 
-  const getBusinesses = async (termInput, locationInput) => {
+  const getArticles = async (termInput) => {
     if(termInput){
-      const searchLocation = locationInput ? locationInput : "Atlanta, GA"
 
-      const distance = parseInt(radius.substring(0,2).trim()) * 800
-  
       const data = {
-        _ep: `/businesses/search`,
-        term: termInput,
-        location: searchLocation,
-        sort_by: sort,
-        radius: distance,
-        open_now: openNow,
-        price: priceString,
+        q: termInput,
+        'api-key': process.env.REACT_APP_API_KEY,
+        begin_date: null,
+        end_date: null,
+        sort: sort,
       }
-  
-      const headers = {
-        Authorization: `Bearer ${process.env.REACT_APP_API_KEY}`
-      }
+
+      if(beginDate) data.begin_date = removeDateDashes(beginDate)
+      if(endDate) data.end_date = removeDateDashes(endDate)
+
+      console.log(data)
   
       try {
-        const response = await axios.get(process.env.REACT_APP_BASE_URL, { params: data, headers: headers })
-        setResults(response.data.businesses)
+        const response = await axios.get(process.env.REACT_APP_BASE_URL, { params: data })
+        setResults(response.data.response.docs)
       } catch (err) {
         console.log(err.message, err.code)
       }
@@ -72,101 +74,59 @@ function App() {
   }
 
   useEffect(() => {
-    if(debouncedSearchTerm || debouncedLocation){
-      getBusinesses(debouncedSearchTerm, debouncedLocation)
+    if(debouncedSearchTerm){
+      getArticles(debouncedSearchTerm)
     } else{
       setResults([])
     }
-  }, [debouncedSearchTerm, debouncedLocation])
+  }, [debouncedSearchTerm])
 
   useEffect(() => {
-    getBusinesses(debouncedSearchTerm, debouncedLocation)
-  }, [openNow, priceString, radius, sort])
+    getArticles(debouncedSearchTerm)
+  }, [sort, beginDate, endDate])
 
 
   return (
 		<main className="display-grid">
-			<a className="site-heading" href="https://www.yelp.com/" target="_blank">Yelp</a>
-			<h2 className="site-heading__subheading">Business Search</h2>
+			<a className="site-heading" href="https://www.nytimes.com/" target="_blank">The New York Times</a>
+			<h2 className="site-heading__subheading">Article Finder</h2>
 			<section className="search-controls">
 				<p className="article-count"></p>
-        <input className="search-controls__input search-controls__input_term" id="term" name="term" placeholder="business" type="text" 
+        <input className="search-controls__input search-controls__input_term" id="term" name="term" type="text" 
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-        />
-        <input className="search-controls__input search-controls__input_location" id="location" name="location" placeholder="location" type="text" 
-          value={location}
-          onChange={(e) => setLocation(e.target.value)}
         />
 
 				<div className="search-menu">
           <select name="sort" className="search-menu__sort-list" id="sort" onChange={(e) => setSort(e.target.value)}>
             <option className="search-menu__item search-menu__item_relevance" value="best_match">Sort by Relevance</option>
-            <option className="search-menu__item search-menu__item_rating" value="rating">Sort by Rating</option>
-            <option className="search-menu__item search-menu__item_count" value="review_count">Sort by # Reviews</option>
-            <option className="search-menu__item search-menu__item_distance" value="distance">Sort by Distance</option>
+            <option className="search-menu__item search-menu__item_newest" value="newest">Sort by Newest</option>
+            <option className="search-menu__item search-menu__item_oldesy" value="oldest">Sort by Oldest</option>
           </select>
 				</div>
 
-				<div className="price-range"><span className="price-range__toggle" onClick={() => setPriceMenuExpanded(!priceMenuExpanded)}>Price Range <span className="price-range__symbol">{priceMenuExpanded ? "<>" : "><"}</span></span>
-					<div className={priceMenuExpanded ? "price-range__input" : "price-range__input hidden"}>
-						<input className="price-range__checkbox" id="$" name="$" type="checkbox" onClick={(e) => updatePriceFilters(e)} />
-						<label className="price-range__label">$</label>
-						<input className="price-range__checkbox" id="$$" name="$$" type="checkbox" onClick={(e) => updatePriceFilters(e)} />
-						<label className="price-range__label">$$</label>
-						<input className="price-range__checkbox" id="$$$" name="$$$" type="checkbox" onClick={(e) => updatePriceFilters(e)} />
-						<label className="price-range__label">$$$</label>
-						<input className="price-range__checkbox" id="$$$$" name="$$$$" type="checkbox" onClick={(e) => updatePriceFilters(e)} />
-						<label className="price-range__label">$$$$</label>
+				<div className="date-range"><span className="date-range__toggle" onClick={() => setDateMenuExpanded(!dateMenuExpanded)}>Date Range <span className="date-range__symbol">{dateMenuExpanded ? "< >" : "><"}</span></span>
+					<div className={dateMenuExpanded ? "date-range__input" : "date-range__input hidden"}>
+            <input className="date-range__input-field date-range__input-field_begin" id="begin-date" name="begin-date" type="date" onChange={(e) => setBeginDate(e.target.value)}/>
+              <p className="date-range__separator">to</p>
+            <input className="date-range__input-field date-range__input-field_end" id="end-date" name="end-date" type="date" onChange={(e) => setEndDate(e.target.value)}/>
 					</div>
-				</div>
-        <div className="radius-menu">
-          <p className="radius-menu__within">Within</p>
-          <select name="sort" className="radius-menu__list" id="radius" defaultValue="25" onChange={(e) => setRadius(e.target.value)}>
-            <option className="radius-menu__item radius-menu__item_5" value="5">5 miles</option>
-						<option className="radius-menu__item radius-menu__item_15" value="15">15 miles</option>
-						<option className="radius-menu__item radius-menu__item_25" value="25">25 miles</option>
-						<option className="radius-menu__item radius-menu__item_50" value="50">50 miles</option>
-          </select>
-				</div>
-				<div className="open-now">
-					<label className="open-now__label">Open Now</label>
-					<input className="open-now__checkbox" id="open" name="open" type="checkbox" onClick={() => setOpenNow(!openNow)}/>
 				</div>
 			</section>
 			<section className="results">
         {results.map((result, i) => {
           const key = `result--${i}`
-          const imageSource = result.image_url
-
-          let transactions = ''
-          if(result.transactions[0]){
-            transactions = ' • '
-            for(let i=0;i<result.transactions.length;i++){
-              let newTransaction = result.transactions[i].replace(/^\w/, (c) => c.toUpperCase())
-              transactions = transactions + newTransaction
-              if(result.transactions[i+1]) transactions = transactions + ', '
-            }
-          }
-
-          let categories = ''
-          for(let i=0;i<result.categories.length;i++){
-            categories = categories + result.categories[i].title
-            if(result.categories[i+1]) categories = categories + ', '
-          }
+          const imageSource = result.multimedia[0] ? `https://www.nytimes.com/${result.multimedia[0].url}` : null
+          const date = parseDate(result.pub_date)
 
           return(
-            <div className="results__row" key={key}>
-              <a className="results__image-slot" href={result.url} target="_blank"><img className="results__photo" src={imageSource} alt="business image" loading="lazy" /></a>
-              <a href={result.url} target="_blank" className="results__name">{result.name}</a>
-              <div className="results__rating-row"><span className="results__rating">{result.rating} stars</span><span className="results__reviews"> ({result.review_count} reviews)</span></div>
-              <div className="results__info-row"><span className="results__price">{result.price} • {categories}</span><span className="results__category">{transactions}</span></div>
-              <p className="results__address-row">{result.location.address1}</p>
-              {result.location.address2 ? <p className="results__address-row">{result.location.address2}</p> : null}
-              {result.location.address3 ? <p className="results__address-row">{result.location.address3}</p> : null}
-              <p className="results__address-row">{result.location.city}, {result.location.state} {result.location.zip_code}</p>
-
-
+            <div key={key} className="results__row">
+              <p className="results__date">{date}</p>
+              <h3 className="results__section">{result.section_name}</h3>
+              <a href={result.web_url} target="_blank" className="results__title">{result.headline.main}</a>
+              <p className="results__abstract">{result.abstract} </p>
+              <p className="results__byline">{result.byline.original}</p>
+              <a className="results__image-slot" href={result.web_url}>{imageSource ? <img src={imageSource} className="results__photo" alt="article image" loading="lazy" /> : null }</a>
             </div>
           )
 

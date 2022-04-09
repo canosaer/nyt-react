@@ -1,6 +1,6 @@
 /* 
 ==============================================
-CONTENT:	Game Store
+CONTENT:	NYT
 AUTHOR:		Eric Canosa
 ==============================================
 
@@ -51,14 +51,14 @@ body{
 
 .site-heading{
 	@include mixins.heading-row;
-	padding: 1rem 0rem 0.35rem;
+	padding: 0.6rem 0rem 0.25rem;
 	font-weight: bold;
-	font-size: 2rem;
+	font-size: 1.5rem;
 
 	&__subheading{
 		@include mixins.heading-row;
 		font-size: 1.15rem;
-		padding-bottom: 1rem;
+		padding-bottom: 0.6rem;
 	}
 }
 
@@ -66,18 +66,9 @@ body{
 	grid-column: 1/-1;
 	background: rgba(211,211,211,0.3);
 	display: grid;
-	grid-template-columns: 0.05fr 1fr 0.3fr 0.05fr;
+	grid-template-columns: 0.2fr 1fr 0.15fr 0.3fr 0.2fr;
 	grid-auto-rows: auto;
 	position: relative;
-
-	@media (min-width: 678px) {
-		grid-template-columns: 0.1fr 1fr 0.3fr 0.1fr;
-	}
-
-	@media (min-width: 768px) {
-		grid-template-columns: 0.2fr 1fr 0.3fr 0.2fr;
-	}
-
 
 	&__input{
 		grid-row: 2/3;
@@ -85,26 +76,11 @@ body{
 		height: 2rem;
 		border: none;
 		outline: none;
-		width: 50%;
+		width: 100%;
 		border-bottom: gray 1px solid;
 		background: none;
-		font-size: 1.5rem;
-		background: white;
-		padding: 0 0.5rem;
-
-		&_term{
-			box-shadow: 0px 1px 3px 0px rgba(0,0,0,0.75);
-			-webkit-box-shadow: 0px 1px 3px 0px rgba(0,0,0,0.75);
-			-moz-box-shadow: 0px 1px 3px 0px rgba(0,0,0,0.75);
-			// z-index:1;
-		}
-
-		&_location{
-			justify-self: right;
-			box-shadow: 0px 1px 3px 0px rgba(0,0,0,0.75);
-			-webkit-box-shadow: 0px 1px 3px 0px rgba(0,0,0,0.75);
-			-moz-box-shadow: 0px 1px 3px 0px rgba(0,0,0,0.75);
-		}
+		font-size: 2rem;
+		font-weight: bold;
 	}
 
 	&__button{
@@ -117,7 +93,7 @@ body{
 		opacity: 0.3;
 		cursor: pointer;
 		align-self: end;
-		margin-left: 0.75rem;
+		margin-left: 0.25rem;
 
 		&:hover{
 			opacity: 1;
@@ -131,28 +107,19 @@ body{
 	color: gray;
 	font-size: 0.75rem;
 	padding: 2rem 0rem 0.6rem 0.1rem;
-	// min-height: 3.35rem;
+	min-height: 3.35rem;
 }
 
 .search-menu{
 	grid-row: 2/3;
-	grid-column: 3/4;
+	grid-column: 4/5;
+	position: relative;
 	place-self: center center;
 	color: gray;
 	font-size: 0.85rem;
 	cursor: pointer;
 	margin-left: 0.5rem;
-
-	&__arrow{
-		padding-left: 0.3rem;
-		position: absolute;
-	}
-
-	&__active{
-		&:hover{
-			color: black;
-		}
-	}
+	padding-right: 6.85%;
 
 	&__sort-list{
 		background: white;
@@ -175,120 +142,45 @@ body{
 	}
 }
 
-.radius-menu{
+.date-range{
 	grid-row: 3/4;
 	grid-column: 2/3;
-	position: relative;
-	color: gray;
-	font-size: 0.75rem;
-	font-weight: bold;
-	display: flex;
-	width: 7rem;
-	padding: 1.3rem 0rem;
-
-	&__within{
-		line-height: 1.5;
-		margin-right: 0.45rem;
-	}
-
-	&__text{
-		padding-right: 0.3rem;
-	}
-
-	&__active{
-		padding-left: 0.3rem;
-		cursor: pointer;
-	}
-
-	&__active{
-		&:hover{
-			color: black;
-		}
-	}
-
-	&__list{
-		background: white;
-		border: 1px solid black;
-		padding: 0.25rem 0rem;
-		width: 4.6rem;
-		border-radius: 0.7rem;
-	}
-
-	&__item{
-		padding: 0.5rem 0.5rem;
-		margin: 0.25rem 0rem;
-		cursor: pointer;
-		
-
-		&:hover{
-			background: steelblue;
-			color: white;
-		}
-	}
-}
-
-.price-range{
-	grid-row: 3/4;
-	grid-column: 2/3;
-	padding: 1.3rem 0rem 1.5rem 0;
+	padding: 1rem 0rem 1.5rem;
 	position: relative;
 	color: gray;
 	cursor: pointer;
 	width: 9rem;
 	font-size: 0.75rem;
 	font-weight: bold;
-	margin: 0.25rem 0 0 15.25rem;
 
 	&__input{
 		position: absolute;
 		display: flex;
+		width: 18rem;
+		justify-content: space-between;
 		align-items: center;
-		top: 0.85rem;
+		top: 0.6rem;
 		left: 6.5rem;
-		padding-top: 0.2rem;
 	}
 
-	&__label{
-		margin-right:0.6rem;
-	}
-
-	&__checkbox{
+	&__input-field{
 		max-width: 8rem;
 	}
 
 	&__symbol{
+		position: absolute;
 		color: gray;
 		font-size: 0.65rem;
+		bottom: 1.6rem;
+		left: 4.8rem;
 	}
 
-	&__toggle{
-		&:hover{
-			color: black;
-		}
+	&:hover{
+		color: black;
 	}
 
 	&:hover &__separator{
 		color: gray;
-	}
-}
-
-.open-now{
-	grid-row: 3/4;
-	grid-column: 2/3;
-	padding: 1.1rem 0rem 1.5rem 0;
-	margin-left: 8.5rem;
-	color: gray;
-	cursor: pointer;
-	font-size: 0.75rem;
-	font-weight: bold;
-	display: flex;
-
-	&__label{
-		align-self: center;
-	}
-
-	&__checkbox{
-		margin: 0.4rem;
 	}
 }
 
@@ -301,54 +193,121 @@ body{
 	&__row{
 		grid-column: 2/5;
 		display: grid;
-		grid-template-columns: 12rem 0.1fr 1fr;
-		grid-auto-rows: max-content;
+		grid-template-columns: 0.25fr 0.0001fr 0.85fr 10.5rem;
+		grid-auto-rows: auto;
 		padding: 1.75rem 0rem;
 		border-bottom: 1px solid lightgray;
 		position: relative;
-		min-height: 16.5rem;
+	}
+
+	&__date{
+		grid-column: 1/2;
+		font-size: 0.75rem;
+		color: gray;
+	}
+
+	&__section{
+		grid-column: 3/4;
+		text-transform: uppercase;
+		font-size: 0.75rem;
+		color: gray;
+		margin-bottom: 0.2rem;
+	}
+
+	&__title{
+		grid-column: 3/4;
+		font-size: 1.35rem;
+		font-family: Georgia, serif;
+		padding: 0rem 14% 0.25rem 0rem;
+		line-height: 1.5;
+	}
+
+	&__abstract{
+		grid-column: 3/4;
+		line-height: 1.5;
+		margin-bottom: 0.6rem;
+		padding-right: 14%;
+		color: #333;
+	}
+
+	&__byline{
+		grid-column: 3/4;
+		font-size: 0.75rem;
+		color: #333;
+	}
+
+	&__image-slot{
+		position: absolute;
+		background: rgba(211,211,211,0.3);
+		right: 0;
+		top: 5rem;
+		transform: translateY(-50%);
 	}
 
 	&__photo{
-		position: absolute;
-		left: 0;
-		top: 50%;
-		transform: translateY(-50%);
-		background: rgba(211,211,211,0.3);
-		height: 12.5rem;
-		width: 12.5rem;
+		@include mixins.default-img;
+		height: 7rem;
+		width: 10.5rem;
 	}
-
-	&__name{
-		font-weight: bold;
-		grid-column: 3/4;
-		font-size: 1.1rem;
-		margin: 0.25rem 0;
-	}
-
-	&__rating-row{
-		grid-column: 3/4;
-		color: gray;
-		font-size: 0.9rem;
-		font-weight: bold;
-		margin-bottom: 0.5rem;
-	}
-
-	&__info-row{
-		grid-column: 3/4;
-		color: gray;
-		font-size: 0.9rem;
-		margin-bottom: 0.75rem;
-	}
-
-	&__address-row{
-		grid-column: 3/4;
-		font-size: 0.95rem;
-		padding-bottom: 0.5rem;
-	}
-
-
 }
+
+// .results{
+// 	display: grid;
+// 	grid-column: 1/-1;
+// 	grid-template-columns: 0.2fr 1fr 0.15fr 0.3fr 0.2fr;
+// 	grid-auto-rows: auto;
+
+// 	&__row{
+// 		grid-column: 2/5;
+// 		display: grid;
+// 		grid-template-columns: 12rem 0.1fr 1fr;
+// 		grid-auto-rows: max-content;
+// 		padding: 1.75rem 0rem;
+// 		border-bottom: 1px solid lightgray;
+// 		position: relative;
+// 		min-height: 16.5rem;
+// 	}
+
+// 	&__photo{
+// 		position: absolute;
+// 		left: 0;
+// 		top: 50%;
+// 		transform: translateY(-50%);
+// 		background: rgba(211,211,211,0.3);
+// 		height: 12.5rem;
+// 		width: 12.5rem;
+// 	}
+
+// 	&__name{
+// 		font-weight: bold;
+// 		grid-column: 3/4;
+// 		font-size: 1.1rem;
+// 		margin: 0.25rem 0;
+// 	}
+
+// 	&__rating-row{
+// 		grid-column: 3/4;
+// 		color: gray;
+// 		font-size: 0.9rem;
+// 		font-weight: bold;
+// 		margin-bottom: 0.5rem;
+// 	}
+
+// 	&__info-row{
+// 		grid-column: 3/4;
+// 		color: gray;
+// 		font-size: 0.9rem;
+// 		margin-bottom: 0.75rem;
+// 	}
+
+// 	&__address-row{
+// 		grid-column: 3/4;
+// 		font-size: 0.95rem;
+// 		padding-bottom: 0.5rem;
+// 	}
+
+
+// }
 
 
 
